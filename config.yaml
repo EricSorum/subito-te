@@ -1,0 +1,110 @@
+# Sheet Music Conversion MVP - Configuration File
+# This file contains all configuration settings for the pipeline
+
+# General Settings
+general:
+  log_level: INFO                    # Logging level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_dir: "./logs"                  # Directory for log files
+  output_dir: "./output"             # Base directory for output files
+  temp_dir: "./temp"                  # Directory for temporary files
+  cleanup_temp_files: true            # Whether to clean up temporary files after processing
+
+# Input Processing Settings
+input:
+  supported_formats:                  # Supported audio formats
+    - mp3
+    - wav
+    - m4a
+    - flac
+    - aac
+  target_sample_rate: 44100           # Target sample rate for audio processing
+  target_channels: 1                  # Target number of channels (1 = mono, 2 = stereo)
+  target_bit_depth: 16                # Target bit depth for audio
+  normalize_audio: true                # Whether to normalize audio levels
+  youtube_download_timeout: 300        # Timeout for YouTube downloads (seconds)
+
+# Transcription Settings (BasicPitch)
+transcription:
+  model_path: null                    # Path to custom BasicPitch model (null = use default)
+  onset_threshold: 0.5                 # Onset detection threshold (0.0-1.0)
+  frame_threshold: 0.3                 # Frame-level threshold (0.0-1.0)
+  minimum_note_length: 0.1             # Minimum note length in seconds
+  minimum_frequency: 80                # Minimum frequency in Hz
+  maximum_frequency: 8000              # Maximum frequency in Hz
+  confidence_threshold: 0.3            # Minimum confidence for note detection
+
+# MIDI to MusicXML Conversion Settings
+conversion:
+  quantize: true                      # Whether to quantize note durations
+  quantize_quarter_length: 0.25       # Quantization resolution (quarter note = 1.0)
+  remove_redundant_rests: true        # Remove unnecessary rests
+  infer_key_signature: true           # Try to infer key signature
+  infer_time_signature: true           # Try to infer time signature
+  add_tempo_markings: true             # Add tempo markings
+  cleanup_overlapping_notes: true     # Remove overlapping notes
+
+# LLM Refinement Settings
+refinement:
+  enabled: true                       # Whether to enable LLM refinement
+  model: "gpt-4"                       # OpenAI model to use (gpt-3.5-turbo, gpt-4, etc.)
+  temperature: 0.3                      # Temperature for LLM generation (0.0-1.0)
+  max_tokens: 4000                     # Maximum tokens for LLM response
+  timeout: 60                          # Timeout for LLM requests (seconds)
+  style: "general"                     # Default refinement style (piano, guitar, vocal, general)
+  
+  # Refinement options
+  remove_redundant_rests: true         # Remove redundant rests
+  fix_quantization_errors: true        # Fix quantization errors
+  infer_key_signature: true            # Infer key signature
+  infer_time_signature: true           # Infer time signature
+  add_tempo_markings: true             # Add tempo markings
+  add_phrasing_hints: true             # Add phrasing hints
+  cleanup_overlapping_notes: true     # Clean up overlapping notes
+
+# Output Generation Settings
+output:
+  pdf_quality: "high"                  # PDF quality: low, medium, high
+  pdf_resolution: 300                  # PDF resolution in DPI
+  include_metadata: true                # Include metadata in PDF
+  page_size: "A4"                      # Page size for PDF
+  margins: "normal"                    # Page margins: narrow, normal, wide
+  musescore_path: null                 # Path to MuseScore executable (null = auto-detect)
+
+# API Settings
+api:
+  openai_api_key: null                 # OpenAI API key (set via environment variable)
+  openai_base_url: null                # Custom OpenAI API base URL
+  timeout: 60                          # API request timeout (seconds)
+  retry_attempts: 3                    # Number of retry attempts for failed requests
+
+# Advanced Settings (for power users)
+advanced:
+  # BasicPitch model settings
+  basic_pitch:
+    model_path: null                  # Custom model path
+    device: "auto"                     # Device for inference (auto, cpu, cuda)
+    batch_size: 1                      # Batch size for processing
+  
+  # Music21 settings
+  music21:
+    environment_path: null              # Custom Music21 environment path
+    use_musescore: true                # Use MuseScore for rendering
+    use_lilypond: false                # Use LilyPond for rendering
+  
+  # Performance settings
+  performance:
+    max_workers: 4                      # Maximum number of worker threads
+    chunk_size: 1024                   # Chunk size for audio processing
+    memory_limit: "2GB"                 # Memory limit for processing
+
+# Environment Variables (these can override the above settings)
+# Set these in your environment or shell:
+# export OPENAI_API_KEY="your-api-key-here"
+# export LOG_LEVEL="DEBUG"
+# export OUTPUT_DIR="/path/to/output"
+# export MUSESCORE_PATH="/path/to/musescore"
+
+# Example Usage:
+# 1. Copy this file to your project directory
+# 2. Modify settings as needed
+# 3. Run: python main.py --input "audio.mp3" --output "./output" --refine --pdf
